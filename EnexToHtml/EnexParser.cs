@@ -111,4 +111,45 @@ public class EnexParser
                 throw new ArgumentOutOfRangeException(nameof(level), level, null);
         }
     }
+
+    public class TagResource
+    {
+        public string Mime { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public string Hash { get; set; }
+        public string FileName { get; set; }
+
+        public TagResource(string mime, string fileName, string sourceUrl)
+        {
+            Mime = mime;
+            Hash = SetHash(sourceUrl);
+            FileName = fileName;
+        }
+
+        public TagResource(string mime, int width, int height, string fileName, string sourceUrl)
+        {
+            Mime = mime;
+            Width = width;
+            Height = height;
+            Hash = SetHash(sourceUrl);
+            FileName = fileName;
+        }
+
+        private static string SetHash(string sourceUrl)
+        {
+            // en-cache://tokenKey%3D%22AuthToken%3AUser%3A2966622%22+
+            // 68868e8f-ec7b-432e-9eb1-6f8c1804988c+
+            // 06b3ceb9f8432939881cea18b8df2659+
+            // https://www.evernote.com/shard/s26/res/d41fbdc0-682f-45bd-92b4-2dfc5297f31a
+            var splited = sourceUrl.Split('+');
+            return splited[2];
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"FileName: {FileName}, Mime: {Mime},  Hash: {Hash}, Width: {Width}, Height: {Height}";
+        }
+    }
 }
